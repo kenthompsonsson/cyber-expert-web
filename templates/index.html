@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <title>Cyber Expert - Code Predator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #000; color: #fff; font-family: 'SolaimanLipi', sans-serif; }
+        .gold-border { border: 1px solid #d4af37; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+    <div class="glass gold-border p-8 rounded-2xl w-full max-w-md text-center shadow-2xl">
+        <h1 class="text-3xl font-bold text-yellow-500 mb-2">Cyber Expert</h1>
+        <p class="text-gray-400 text-sm mb-6 uppercase tracking-widest">Code Predator Edition</p>
+        
+        <div id="game-box">
+            <h2 class="text-xl font-semibold mb-4 text-yellow-200">আপনি কি তৈরি?</h2>
+            <button onclick="loadLevel(1)" class="bg-yellow-600 hover:bg-yellow-500 text-black font-bold py-3 px-8 rounded-full transition duration-300">শুরু করুন</button>
+        </div>
+    </div>
+
+    <script>
+        async function loadLevel(lvl) {
+            const res = await fetch(`/get_level/${lvl}`);
+            const data = await res.json();
+            if(data.error) { alert("সব লেভেল শেষ!"); return; }
+
+            document.getElementById('game-box').innerHTML = `
+                <h2 class="text-lg text-yellow-400 mb-4">${data.title}</h2>
+                <p class="text-sm text-gray-300 mb-6">${data.study}</p>
+                <div class="space-y-3">
+                    ${data.options.map(opt => `
+                        <button onclick="check('${opt}', '${data.ans}', ${lvl})" class="w-full py-2 bg-gray-900 border border-gray-700 rounded hover:border-yellow-500">${opt}</button>
+                    `).join('')}
+                </div>
+            `;
+        }
+        function check(sel, ans, lvl) {
+            if(sel === ans) { alert("সঠিক! ✅"); loadLevel(lvl+1); }
+            else { alert("ভুল! ❌ আবার পড়ো।"); }
+        }
+    </script>
+</body>
+</html>
